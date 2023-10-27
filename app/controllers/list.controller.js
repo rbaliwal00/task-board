@@ -18,3 +18,16 @@ exports.creatList = (req, res) => {
         res.status(500).send({ message: err.message });
       });
   };
+
+exports.getAllTaskForList = (req, res) => {
+    const id = req.params.id;
+    // Save User to Database
+    List.findByPk(id,{ include: ["task"] })
+    .then(list => {
+    console.log(list);
+    res.status(200).send(list);
+    })
+    .catch(err => {
+    res.status(500).send({ message: err.message });
+    });
+};

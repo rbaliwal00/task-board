@@ -2,16 +2,36 @@ const db = require("../models");
 const config = require("../config/auth.config");
 
 const User = db.user;
+const List = db.list;
+const Task = db.task;
 
 exports.findUserById = (req, res) => {
   const userId = req.params.id;
   User.findByPk(userId, {
-    include: ["list"],
-  }).then((user) => {
-    res.status(200).send(user);
-  }).catch((err) => {
-    res.status(400).send("CAnnot Fetch User!!");
-  });
+    include: [
+      {
+        model: List,
+        as: 'list', // Specify the alias for the list association
+        include: [
+          {
+            model: Task,
+            as: 'task', // Specify the alias for the task association
+          }
+        ],
+      },
+    ],
+  })
+    .then((user) => {
+      if (user) {
+        res.status(200).send(user);
+      } else {
+        res.status(404).send("User not found");
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Cannot Fetch User");
+    });
 };
 
 exports.userBoard = (req, res) => {

@@ -11,4 +11,5 @@ module.exports = function(app) {
   });
 
   app.post("/api/list", controller.creatList);
+  app.get("/api/list/:id", controller.getAllTaskForList);
 };
